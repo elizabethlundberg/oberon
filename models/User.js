@@ -1,14 +1,14 @@
-const { Schema } = require('mongoose')
+const mongoose = require('mongoose')
+
+const Schema = mongoose.Schema
 
 const userSchema = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     passwordDigest: { type: String, required: true }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 )
 
 module.exports = userSchema

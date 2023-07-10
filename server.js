@@ -3,6 +3,7 @@ const logger = require('morgan')
 const cors = require('cors')
 
 const AuthRouter = require('./routes/AuthRouter')
+const NotesRouter = require('./routes/NotesRouter')
 
 const PORT = process.env.PORT || 3001
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use('/auth', AuthRouter)
+app.use('/tree', NotesRouter)
 
 app.use('/', (req, res) => {
   res.send('Connected!')
