@@ -1,5 +1,5 @@
 const express = require('express')
-const logger = require('logger')
+const logger = require('morgan')
 const cors = require('cors')
 
 const PORT = process.env.PORT || 3001
