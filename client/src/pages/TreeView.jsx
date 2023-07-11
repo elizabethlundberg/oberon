@@ -1,43 +1,68 @@
 import { useEffect, useState } from 'react'
-import { GetNotes } from '../services/NoteServices'
+import { GetNotes, GetBranches } from '../services/NoteServices'
 import { useNavigate } from 'react-router-dom'
-import { PostNote } from '../services/NoteServices'
+import {
+  CreateNote,
+  CreateBranch,
+  CreateConnection
+} from '../services/NoteServices'
+import LeafNote from '../components/LeafNote'
+import { Right, Fill } from 'react-spaces'
+import BranchNote from '../components/Branch'
+import { DndContext } from '@dnd-kit/core'
 
 const TreeView = ({ user }) => {
   let navigate = useNavigate()
   const [notes, setNotes] = useState([])
-  const [formValue, setFormValue] = useState({ body: '' })
+  const [noteFormValue, setNoteFormValue] = useState({ body: '' })
+  const [branchFormValue, setBranchFormValue] = useState({ body: '' })
+  const [branches, setBranches] = useState([])
 
-  useEffect(() => {
-    const handleNotes = async () => {
-      const data = await GetNotes()
-      setNotes(data)
-    }
-    handleNotes()
-  }, [])
-
-  const handleChange = (e) => {
-    setFormValue({ body: e.target.value })
+  const handleNoteChange = (e) => {
+    setNoteFormValue({ body: e.target.value })
   }
 
-  const handleSubmit = async (e) => {
+  const handleBranchChange = (e) => {
+    setBranchFormValue({ body: e.target.value })
+  }
+
+  const handleBranchSubmit = async (e) => {
     e.preventDefault()
-    await PostNote({
-      body: formValue.body,
+    const newBranch = await CreateBranch({
+      body: branchFormValue.body,
       user: user.id
     })
-    setFormValue({
+    setBranches([...branches, newBranch.data])
+    setBranchFormValue({
       body: ''
     })
   }
 
+  const handleNoteSubmit = async (e) => {
+    e.preventDefault()
+
+    const newNote = await CreateNote({
+      body: noteFormValue.body,
+      user: user.id
+    })
+    setNotes([...notes, newNote.data])
+    setNoteFormValue({
+      body: ''
+    })
+  }
+
+  const handleDragEnd = (e) => {
+    const { active, over } = e
+    CreateConnection(active, over)
+  }
+
   const addNoteForm = (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleNoteSubmit}>
         <input
           type="text"
-          value={formValue.body}
-          onChange={handleChange}
+          value={noteFormValue.body}
+          onChange={handleNoteChange}
           required
         />
         <button type="submit">+</button>
@@ -45,7 +70,77 @@ const TreeView = ({ user }) => {
     </div>
   )
 
-  return user && notes.length ? addNoteForm : addNoteForm
+  const addBranchForm = (
+    <div>
+      <form onSubmit={handleBranchSubmit}>
+        <input
+          type="text"
+          value={branchFormValue.body}
+          onChange={handleBranchChange}
+          required
+        />
+        <button type="submit">+</button>
+      </form>
+    </div>
+  )
+
+  useEffect(() => {
+    const getNotes = async () => {
+      const data = await GetNotes()
+      setNotes(data)
+    }
+    const getBranches = async () => {
+      const data = await GetBranches()
+      setBranches(data)
+    }
+    getNotes()
+    getBranches()
+  }, [])
+
+  return (
+    <DndContext onDragEnd={handleDragEnd}>
+      <div id="tree-view">
+        {user && notes.length ? (
+          <Right size="300px" scrollable={true}>
+            <div>
+              {addNoteForm}
+              <div>
+                {notes.map((note) => (
+                  <LeafNote
+                    id={`note-${note._id}`}
+                    body={note.body}
+                    key={note._id}
+                  />
+                ))}
+              </div>
+            </div>
+          </Right>
+        ) : (
+          addNoteForm
+        )}
+        <Fill>
+          {user && branches.length ? (
+            <Right size="300px" scrollable={true}>
+              <div>
+                {addBranchForm}
+                <div>
+                  {branches.map((branch) => (
+                    <BranchNote
+                      body={branch.body}
+                      key={branch._id}
+                      id={`branch-${branch._id}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </Right>
+          ) : (
+            addBranchForm
+          )}
+        </Fill>
+      </div>
+    </DndContext>
+  )
 }
 
 export default TreeView

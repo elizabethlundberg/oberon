@@ -19,10 +19,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/auth', AuthRouter)
 app.use('/tree', NotesRouter)
 
-app.use('/', (req, res) => {
-  res.send('Connected!')
-})
-
 app.listen(PORT, () => {
   console.log(`Running Express server on Port ${PORT}. . .`)
 })

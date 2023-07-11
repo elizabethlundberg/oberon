@@ -1,13 +1,12 @@
 const { Schema } = require('mongoose')
 
-const noteSchema = new Schema(
+const branchSchema = new Schema(
   {
     body: { type: String, required: true },
     user: { type: Schema.Types.ObjectId },
-    project: { type: Schema.Types.ObjectId },
-    branch: { type: Schema.Types.ObjectId }
+    project: { type: Schema.Types.ObjectId }
   },
   { timestamps: true }
 )
 
-module.exports = noteSchema
+module.exports = branchSchema
