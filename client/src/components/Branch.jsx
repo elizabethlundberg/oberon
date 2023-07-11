@@ -10,6 +10,12 @@ const BranchNote = (props) => {
   return (
     <div ref={setNodeRef} style={style} className="border-4 border-black">
       <p>{props.body}</p>
+      {props.children
+        ? props.children.map((child) => {
+            const childNote = props.notes.find((note) => note._id === child)
+            return <div key={childNote._id}>{childNote.body}</div>
+          })
+        : ''}
     </div>
   )
 }

@@ -7,6 +7,7 @@ const LeafNote = (props) => {
   const style = transform
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
     : undefined
+
   return (
     <div
       className="border-4 border-black"

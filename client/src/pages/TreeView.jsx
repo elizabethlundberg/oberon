@@ -105,13 +105,17 @@ const TreeView = ({ user }) => {
             <div>
               {addNoteForm}
               <div>
-                {notes.map((note) => (
-                  <LeafNote
-                    id={`note-${note._id}`}
-                    body={note.body}
-                    key={note._id}
-                  />
-                ))}
+                {notes.map((note) =>
+                  note.connected ? (
+                    ''
+                  ) : (
+                    <LeafNote
+                      id={`note-${note._id}`}
+                      body={note.body}
+                      key={note._id}
+                    />
+                  )
+                )}
               </div>
             </div>
           </Right>
@@ -127,8 +131,10 @@ const TreeView = ({ user }) => {
                   {branches.map((branch) => (
                     <BranchNote
                       body={branch.body}
+                      children={branch.notes}
                       key={branch._id}
                       id={`branch-${branch._id}`}
+                      notes={notes}
                     />
                   ))}
                 </div>

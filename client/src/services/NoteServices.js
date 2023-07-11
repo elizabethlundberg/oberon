@@ -44,7 +44,6 @@ export const CreateConnection = async (active, over) => {
       const res = await Client.post(
         `/tree/postnoteconnection/${noteId}/${branchId}`
       )
-      console.log(res)
       return res
     }
   } catch (err) {

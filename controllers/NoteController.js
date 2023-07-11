@@ -2,7 +2,9 @@ const { Note, Branch } = require('../models')
 
 const GetNotes = async (req, res) => {
   try {
-    const notes = await Note.find({ user: res.locals.payload.id })
+    const notes = await Note.find({
+      user: res.locals.payload.id
+    })
     res.send(notes)
   } catch (err) {
     throw err
@@ -37,14 +39,24 @@ const CreateBranch = async (req, res) => {
 }
 
 const CreateNoteConnection = async (req, res) => {
+  const note_id = req.params.note_id
   try {
-    const updateNote = {
-      $set: {
-        branch: req.params.branch_id
+    const branch = await Branch.findById(req.params.branch_id)
+    if (!branch.notes.includes(note_id)) {
+      const note = await Note.findById(note_id)
+      if (!note.connected) {
+        note.connected = true
+        note.save()
+      } else {
+        const oldBranch = await Branch.updateOne(
+          { notes: note_id },
+          { $pull: { notes: note_id } }
+        )
       }
+      branch.notes.push(note_id)
+      const result = branch.save()
+      res.send(result)
     }
-    const newNote = await Note.findByIdAndUpdate(req.params.note_id, updateNote)
-    res.send(newNote)
   } catch (err) {
     throw err
   }
