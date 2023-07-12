@@ -13,7 +13,9 @@ const GetNotes = async (req, res) => {
 
 const GetBranches = async (req, res) => {
   try {
-    const branches = await Branch.find({ user: res.locals.payload.id })
+    const branches = await Branch.find({
+      user: res.locals.payload.id
+    }).populate('notes')
     res.send(branches)
   } catch (err) {
     throw err

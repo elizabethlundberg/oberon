@@ -7,9 +7,10 @@ import {
   CreateConnection
 } from '../services/NoteServices'
 import LeafNote from '../components/LeafNote'
-import { Right, Fill } from 'react-spaces'
+import { Right, Fill, Left } from 'react-spaces'
 import BranchNote from '../components/Branch'
 import { DndContext } from '@dnd-kit/core'
+import Trunk from '../components/Trunk'
 
 const TreeView = ({ user }) => {
   let navigate = useNavigate()
@@ -53,6 +54,7 @@ const TreeView = ({ user }) => {
 
   const handleDragEnd = (e) => {
     const { active, over } = e
+    console.log(e)
     CreateConnection(active, over)
   }
 
@@ -95,6 +97,7 @@ const TreeView = ({ user }) => {
     }
     getNotes()
     getBranches()
+    console.log(branches)
   }, [])
 
   return (
@@ -124,26 +127,27 @@ const TreeView = ({ user }) => {
         )}
         <Fill>
           {user && branches.length ? (
-            <Right size="300px" scrollable={true}>
+            <div>
+              {addBranchForm}
               <div>
-                {addBranchForm}
-                <div>
-                  {branches.map((branch) => (
-                    <BranchNote
-                      body={branch.body}
-                      children={branch.notes}
-                      key={branch._id}
-                      id={`branch-${branch._id}`}
-                      notes={notes}
-                    />
-                  ))}
-                </div>
+                {branches.map((branch) => (
+                  <BranchNote
+                    body={branch.body}
+                    children={branch.notes}
+                    key={branch._id}
+                    id={`branch-${branch._id}`}
+                    notes={notes}
+                  />
+                ))}
               </div>
-            </Right>
+            </div>
           ) : (
             addBranchForm
           )}
         </Fill>
+        <Left size="300px" scrollable={true}>
+          <Trunk />
+        </Left>
       </div>
     </DndContext>
   )
