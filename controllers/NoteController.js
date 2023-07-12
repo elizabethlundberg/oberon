@@ -15,7 +15,12 @@ const GetBranches = async (req, res) => {
   try {
     const branches = await Branch.find({
       user: res.locals.payload.id
-    }).populate('notes')
+    })
+      .populate({
+        path: 'childBranch',
+        populate: { path: 'childBranch', populate: { path: 'childBranch' } }
+      })
+      .populate('notes')
     res.send(branches)
   } catch (err) {
     throw err
@@ -56,8 +61,32 @@ const CreateNoteConnection = async (req, res) => {
         )
       }
       branch.notes.push(note_id)
-      const result = branch.save()
+      const result = await branch.save()
       res.send(result)
+    }
+  } catch (err) {
+    throw err
+  }
+}
+
+const CreateB2BConnection = async (req, res) => {
+  const child_id = req.params.child_id
+  try {
+    const parentBranch = await Branch.findById(req.params.parent_id)
+    if (!parentBranch.childBranch.includes(child_id)) {
+      const childBranch = await Branch.findById(child_id)
+      if (!childBranch.connected) {
+        childBranch.connected = true
+        childBranch.save()
+      } else {
+        const oldBranch = await Branch.updateOne(
+          { childBranch: child_id },
+          { $pull: { childBranch: child_id } }
+        )
+      }
+      parentBranch.childBranch.push(child_id)
+      await parentBranch.save()
+      res.send(parentBranch)
     }
   } catch (err) {
     throw err
@@ -69,5 +98,6 @@ module.exports = {
   CreateNote,
   GetBranches,
   CreateBranch,
-  CreateNoteConnection
+  CreateNoteConnection,
+  CreateB2BConnection
 }

@@ -37,4 +37,11 @@ router.post(
   controller.CreateNoteConnection
 )
 
+router.post(
+  '/postbranchtobranchconnection/:parent_id/:child_id',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.CreateB2BConnection
+)
+
 module.exports = router

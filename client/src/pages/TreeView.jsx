@@ -9,7 +9,7 @@ import {
 import LeafNote from '../components/LeafNote'
 import { Right, Fill, Left } from 'react-spaces'
 import BranchNote from '../components/Branch'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, DragOverlay } from '@dnd-kit/core'
 import Trunk from '../components/Trunk'
 
 const TreeView = ({ user }) => {
@@ -18,6 +18,8 @@ const TreeView = ({ user }) => {
   const [noteFormValue, setNoteFormValue] = useState({ body: '' })
   const [branchFormValue, setBranchFormValue] = useState({ body: '' })
   const [branches, setBranches] = useState([])
+  const [activeId, setActiveId] = useState(null)
+  const [loaded, setLoaded] = useState(false)
 
   const handleNoteChange = (e) => {
     setNoteFormValue({ body: e.target.value })
@@ -54,8 +56,8 @@ const TreeView = ({ user }) => {
 
   const handleDragEnd = (e) => {
     const { active, over } = e
-    console.log(e)
     CreateConnection(active, over)
+    setActiveId(null)
   }
 
   const addNoteForm = (
@@ -97,7 +99,7 @@ const TreeView = ({ user }) => {
     }
     getNotes()
     getBranches()
-    console.log(branches)
+    setLoaded(true)
   }, [])
 
   return (
@@ -125,20 +127,27 @@ const TreeView = ({ user }) => {
         ) : (
           addNoteForm
         )}
-        <Fill>
-          {user && branches.length ? (
+        <Fill scrollable={true}>
+          {user && branches.length && loaded ? (
             <div>
               {addBranchForm}
               <div>
-                {branches.map((branch) => (
-                  <BranchNote
-                    body={branch.body}
-                    children={branch.notes}
-                    key={branch._id}
-                    id={`branch-${branch._id}`}
-                    notes={notes}
-                  />
-                ))}
+                {branches.map((branch) =>
+                  branch.connected ? (
+                    ''
+                  ) : (
+                    <BranchNote
+                      body={branch.body}
+                      childNotes={branch.notes}
+                      key={branch._id}
+                      id={`branch-${branch._id}`}
+                      notes={notes}
+                      level="1"
+                      childBranches={branch.childBranch}
+                      allNotes={notes}
+                    />
+                  )
+                )}
               </div>
             </div>
           ) : (
