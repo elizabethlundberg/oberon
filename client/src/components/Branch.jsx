@@ -14,10 +14,22 @@ const BranchNote = (props) => {
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px,0)` }
     : undefined
   useEffect(() => {
-    setChildNotes(props.childNotes)
     setChildBranches(props.childBranches)
-    console.log(childBranches)
-  })
+    let childNotesArr = []
+    if (props.childNotes.length) {
+      props.childNotes.forEach((noteString) => {
+        if (typeof noteString === 'string') {
+          const noteToAdd = props.allNotes.find((allNote) => {
+            return allNote._id === noteString
+          })
+          childNotesArr.push(noteToAdd)
+          setChildNotes(childNotesArr)
+        } else {
+          setChildNotes(props.childNotes)
+        }
+      })
+    }
+  }, [])
   const nextLevel = parseInt(props.level) + 1
 
   return (
@@ -36,6 +48,7 @@ const BranchNote = (props) => {
                 level={nextLevel}
                 childBranches={branch.childBranch}
                 allBranches={props.allBranches}
+                allNotes={props.allNotes}
               />
             )
           })
