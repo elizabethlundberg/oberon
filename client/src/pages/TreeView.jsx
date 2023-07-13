@@ -20,7 +20,6 @@ const TreeView = ({ user }) => {
   const [branches, setBranches] = useState([])
   const [activeId, setActiveId] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  const [newConnection, setNewConnection] = useState(false)
 
   const handleNoteChange = (e) => {
     setNoteFormValue({ body: e.target.value })
@@ -59,7 +58,7 @@ const TreeView = ({ user }) => {
     const { active, over } = e
     if (over) {
       CreateConnection(active, over)
-      setNewConnection(true)
+      const newConnection = true
     }
     setActiveId(null)
   }
@@ -100,7 +99,7 @@ const TreeView = ({ user }) => {
     const getBranches = async () => {
       const data = await GetBranches()
       let curNum = 1
-      data.forEach((datum) => {
+      await data.forEach((datum) => {
         if (!datum.connected) {
           datum.number = curNum
           curNum += 1
@@ -111,8 +110,7 @@ const TreeView = ({ user }) => {
     getNotes()
     getBranches()
     setLoaded(true)
-    setNewConnection(false)
-  }, [newConnection])
+  }, [])
 
   return (
     <DndContext onDragEnd={handleDragEnd}>

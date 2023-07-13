@@ -33,6 +33,7 @@ const BranchNote = (props) => {
       })
       setChildBranches(numberedBranches)
     }
+    let noteArr = []
     if (props.childNotes.length) {
       let curNum = 1
       props.childNotes.forEach((noteString) => {
@@ -40,13 +41,12 @@ const BranchNote = (props) => {
           let noteToAdd = props.allNotes.find((allNote) => {
             return allNote._id === noteString
           })
-          noteToAdd.number = curNum
-          curNum++
-          setChildNotes([...childNotes, noteToAdd])
+          noteArr.push(noteToAdd)
         } else {
-          setChildNotes([...childNotes, noteToAdd])
+          noteArr.push(noteString)
         }
       })
+      setChildNotes(noteArr)
     }
     setIsLoaded(true)
   }, [])
@@ -108,21 +108,19 @@ const BranchNote = (props) => {
       )}
     </div>
   )
-
+  console.log(childNotes)
   return isLoaded ? (
     <div className={'border-4 border-black level-' + nextLevel}>
       {editable ? editForm : normalBody}
       {props.level > 1 ? moveButtons : ''}
       {props.level > 3 ? '' : <DropBox id={props.id} />}
-      {childNotes.map((child) => {
-        return (
-          <LeavesOnBranches
-            id={`note-${child._id}`}
-            body={child.body}
-            key={child._id}
-          />
-        )
-      })}
+      {childNotes.map((child) => (
+        <LeavesOnBranches
+          id={`note-${child._id}`}
+          body={child.body}
+          key={child._id}
+        />
+      ))}
       {childBranches.length
         ? childBranches.map((branch) => {
             return (
