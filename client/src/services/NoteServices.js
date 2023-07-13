@@ -48,6 +48,7 @@ export const CreateConnection = async (active, over) => {
       )
       return res
     } else if (active.id.startsWith('branch') && over.id.startsWith('branch')) {
+      console.log(over)
       const parentBranch = over.id.replace('branch-', '')
       const childBranch = active.id.replace('branch-', '')
       const res = await Client.post(

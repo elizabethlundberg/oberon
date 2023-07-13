@@ -15,6 +15,7 @@ const BranchNote = (props) => {
   const [childNotes, setChildNotes] = useState([])
   const [editable, setEditable] = useState(false)
   const [editText, setEditText] = useState(props.body)
+  const [isLoaded, setIsLoaded] = useState(false)
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `${props.id}`
   })
@@ -23,28 +24,31 @@ const BranchNote = (props) => {
     : undefined
 
   useEffect(() => {
-    let propChildBranches = props.childBranches
-    let curNum = 1
-    propChildBranches.forEach((branch) => {
-      branch.number = curNum
-      curNum += 1
-    })
-    setChildBranches(propChildBranches)
-    let childNotesArr = []
+    if (props.childBranches.length) {
+      let numberedBranches = props.childBranches
+      let curNum = 1
+      numberedBranches.forEach((branch) => {
+        branch.number = curNum
+        curNum++
+      })
+      setChildBranches(numberedBranches)
+    }
     if (props.childNotes.length) {
+      let curNum = 1
       props.childNotes.forEach((noteString) => {
         if (typeof noteString === 'string') {
-          const noteToAdd = props.allNotes.find((allNote) => {
+          let noteToAdd = props.allNotes.find((allNote) => {
             return allNote._id === noteString
           })
-          childNotesArr.push(noteToAdd)
-          setChildNotes(childNotesArr)
+          noteToAdd.number = curNum
+          curNum++
+          setChildNotes([...childNotes, noteToAdd])
         } else {
-          setChildNotes(props.childNotes)
+          setChildNotes([...childNotes, noteToAdd])
         }
       })
     }
-    console.log(childBranches.length)
+    setIsLoaded(true)
   }, [])
   const nextLevel = parseInt(props.level) + 1
 
@@ -105,11 +109,11 @@ const BranchNote = (props) => {
     </div>
   )
 
-  return (
+  return isLoaded ? (
     <div className={'border-4 border-black level-' + nextLevel}>
       {editable ? editForm : normalBody}
       {props.level > 1 ? moveButtons : ''}
-      <DropBox id={props.id} />
+      {props.level > 3 ? '' : <DropBox id={props.id} />}
       {childNotes.map((child) => {
         return (
           <LeavesOnBranches
@@ -138,6 +142,8 @@ const BranchNote = (props) => {
           })
         : ''}
     </div>
+  ) : (
+    ''
   )
 }
 

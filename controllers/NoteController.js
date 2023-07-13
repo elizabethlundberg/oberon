@@ -143,6 +143,10 @@ const DeleteBranch = async (req, res) => {
       { parentBranch: branch_id },
       { $set: { connected: false } }
     )
+    await Branch.updateMany(
+      { parentBranch: branch_id },
+      { $set: { connected: false } }
+    )
     const result = await Branch.findOneAndDelete({ _id: branch_id })
     res.send(result)
   } catch (err) {
