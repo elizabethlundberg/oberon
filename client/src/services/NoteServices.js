@@ -12,7 +12,6 @@ export const GetNotes = async () => {
 export const GetBranches = async () => {
   try {
     const res = await Client.get('/tree/branches')
-    console.log(res)
     return res.data
   } catch (err) {
     throw err
@@ -56,6 +55,53 @@ export const CreateConnection = async (active, over) => {
       )
       return res
     }
+  } catch (err) {
+    throw err
+  }
+}
+
+export const UpdateBranch = async (branch_id, data) => {
+  try {
+    const stripId = branch_id.replace('branch-', '')
+    const res = await Client.put(`/tree/branchedit/${stripId}`, { body: data })
+  } catch (err) {
+    throw err
+  }
+}
+
+export const UpdateNote = async (note_id, data) => {
+  try {
+    const stripId = note_id.replace('note-', '')
+    const res = await Client.put(`/tree/noteedit/${stripId}`, { body: data })
+  } catch (err) {
+    throw err
+  }
+}
+
+export const DeleteNote = async (note_id) => {
+  try {
+    const stripId = note_id.replace('note-', '')
+    const res = await Client.delete(`/tree/notedelete/${stripId}`)
+  } catch (err) {
+    throw err
+  }
+}
+
+export const MoveBranchUp = async (branch_id, branch_num) => {
+  try {
+    const stripId = branch_id.replace('branch-', '')
+    const res = await Client.post(`/tree/branchmoveup/${stripId}/${branch_num}`)
+  } catch (err) {
+    throw err
+  }
+}
+
+export const MoveBranchDown = async (branch_id, branch_num) => {
+  try {
+    const stripId = branch_id.replace('branch-', '')
+    const res = await Client.post(
+      `/tree/branchmovedown/${stripId}/${branch_num}`
+    )
   } catch (err) {
     throw err
   }

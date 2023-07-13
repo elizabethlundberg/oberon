@@ -56,7 +56,9 @@ const TreeView = ({ user }) => {
 
   const handleDragEnd = (e) => {
     const { active, over } = e
-    CreateConnection(active, over)
+    if (over) {
+      CreateConnection(active, over)
+    }
     setActiveId(null)
   }
 
@@ -95,6 +97,13 @@ const TreeView = ({ user }) => {
     }
     const getBranches = async () => {
       const data = await GetBranches()
+      let curNum = 1
+      await data.forEach((datum) => {
+        if (!datum.parentBranch) {
+          datum.number = curNum
+          curNum += 1
+        }
+      })
       setBranches(data)
     }
     getNotes()
@@ -137,6 +146,7 @@ const TreeView = ({ user }) => {
                     ''
                   ) : (
                     <BranchNote
+                      number={branch.number}
                       body={branch.body}
                       childNotes={branch.notes}
                       key={branch._id}
@@ -145,6 +155,7 @@ const TreeView = ({ user }) => {
                       level="1"
                       childBranches={branch.childBranch}
                       allNotes={notes}
+                      parentLength={branches.length}
                     />
                   )
                 )}
