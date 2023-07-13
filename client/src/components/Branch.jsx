@@ -5,6 +5,7 @@ import DropBox from './DropBox'
 import Branch from './Branch'
 import {
   UpdateBranch,
+  DeleteBranch,
   MoveBranchUp,
   MoveBranchDown
 } from '../services/NoteServices'
@@ -60,6 +61,10 @@ const BranchNote = (props) => {
     setEditText(e.target.value)
   }
 
+  const handleDeleteClick = (e) => {
+    DeleteBranch(props.id)
+  }
+
   const editForm = (
     <form onSubmit={handleEditSubmit}>
       <input type="text" value={editText} onChange={handleEditInput} />
@@ -76,6 +81,7 @@ const BranchNote = (props) => {
       </div>
       <div>
         <button onClick={handleEditClick}>EDIT</button>
+        <button onClick={handleDeleteClick}>DELETE</button>
       </div>
     </div>
   )

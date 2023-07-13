@@ -139,6 +139,10 @@ const DeleteNote = async (req, res) => {
 const DeleteBranch = async (req, res) => {
   const branch_id = req.params.branch_id
   try {
+    await Note.updateMany(
+      { parentBranch: branch_id },
+      { $set: { connected: false } }
+    )
     const result = await Branch.findOneAndDelete({ _id: branch_id })
     res.send(result)
   } catch (err) {

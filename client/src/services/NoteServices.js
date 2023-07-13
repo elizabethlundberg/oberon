@@ -87,6 +87,15 @@ export const DeleteNote = async (note_id) => {
   }
 }
 
+export const DeleteBranch = async (branch_id) => {
+  try {
+    const stripId = branch_id.replace('branch-', '')
+    const res = await Client.delete(`/tree/branchdelete/${stripId}`)
+  } catch (err) {
+    throw err
+  }
+}
+
 export const MoveBranchUp = async (branch_id, branch_num) => {
   try {
     const stripId = branch_id.replace('branch-', '')
