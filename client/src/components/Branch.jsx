@@ -15,7 +15,6 @@ const BranchNote = (props) => {
   const [childNotes, setChildNotes] = useState([])
   const [editable, setEditable] = useState(false)
   const [editText, setEditText] = useState(props.body)
-  const [isLoaded, setIsLoaded] = useState(false)
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `${props.id}`
   })
@@ -35,7 +34,6 @@ const BranchNote = (props) => {
     }
     let noteArr = []
     if (props.childNotes.length) {
-      let curNum = 1
       props.childNotes.forEach((noteString) => {
         if (typeof noteString === 'string') {
           let noteToAdd = props.allNotes.find((allNote) => {
@@ -48,8 +46,8 @@ const BranchNote = (props) => {
       })
       setChildNotes(noteArr)
     }
-    setIsLoaded(true)
-  }, [])
+  }, [props])
+
   const nextLevel = parseInt(props.level) + 1
 
   const handleEditClick = (e) => {
@@ -108,8 +106,7 @@ const BranchNote = (props) => {
       )}
     </div>
   )
-  console.log(childNotes)
-  return isLoaded ? (
+  return (
     <div className={'border-4 border-black level-' + nextLevel}>
       {editable ? editForm : normalBody}
       {props.level > 1 ? moveButtons : ''}
@@ -140,8 +137,6 @@ const BranchNote = (props) => {
           })
         : ''}
     </div>
-  ) : (
-    ''
   )
 }
 

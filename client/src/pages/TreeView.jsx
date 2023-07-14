@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 import { GetNotes, GetBranches } from '../services/NoteServices'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -19,7 +19,6 @@ const TreeView = ({ user }) => {
   const [branchFormValue, setBranchFormValue] = useState({ body: '' })
   const [branches, setBranches] = useState([])
   const [activeId, setActiveId] = useState(null)
-  const [loaded, setLoaded] = useState(false)
 
   const handleNoteChange = (e) => {
     setNoteFormValue({ body: e.target.value })
@@ -58,7 +57,19 @@ const TreeView = ({ user }) => {
     const { active, over } = e
     if (over) {
       CreateConnection(active, over)
-      const newConnection = true
+      const parentSearchId = over.id.replace('branch-', '')
+      let parentBranch = branches.find((branch) => {
+        return branch._id === parentSearchId
+      })
+      if (active.id.startsWith('note-')) {
+        const noteSearchId = active.id.replace('note-', '')
+        let childNote = notes.find((note) => {
+          return note._id === noteSearchId
+        })
+        let newArr = branches
+        newArr[parentBranch.number - 1].notes.push(childNote)
+        setBranches([...newArr])
+      }
     }
     setActiveId(null)
   }
@@ -107,10 +118,14 @@ const TreeView = ({ user }) => {
       })
       setBranches(data)
     }
-    getNotes()
-    getBranches()
-    setLoaded(true)
-  }, [])
+    if (!notes.length) {
+      getNotes()
+    }
+    if (!branches.length) {
+      getBranches()
+    }
+    console.log(branches)
+  }, [branches])
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -138,7 +153,7 @@ const TreeView = ({ user }) => {
           addNoteForm
         )}
         <Fill scrollable={true}>
-          {user && branches.length && loaded ? (
+          {user && branches.length ? (
             <div>
               {addBranchForm}
               <div>
@@ -166,9 +181,6 @@ const TreeView = ({ user }) => {
             addBranchForm
           )}
         </Fill>
-        <Left size="300px" scrollable={true}>
-          <Trunk />
-        </Left>
       </div>
     </DndContext>
   )
