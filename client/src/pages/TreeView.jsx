@@ -1,5 +1,10 @@
-import { useEffect, useState, useReducer } from 'react'
-import { GetNotes, GetBranches } from '../services/NoteServices'
+import { useEffect, useState } from 'react'
+import {
+  GetNotes,
+  GetBranches,
+  GetProject,
+  UpdateProject
+} from '../services/NoteServices'
 import { useNavigate } from 'react-router-dom'
 import {
   CreateNote,
@@ -7,10 +12,9 @@ import {
   CreateConnection
 } from '../services/NoteServices'
 import LeafNote from '../components/LeafNote'
-import { Right, Fill, Left } from 'react-spaces'
+import { Right, Fill, Top } from 'react-spaces'
 import BranchNote from '../components/Branch'
 import { DndContext, DragOverlay } from '@dnd-kit/core'
-import Trunk from '../components/Trunk'
 
 const TreeView = ({ user }) => {
   let navigate = useNavigate()
@@ -19,6 +23,8 @@ const TreeView = ({ user }) => {
   const [branchFormValue, setBranchFormValue] = useState({ body: '' })
   const [branches, setBranches] = useState([])
   const [activeId, setActiveId] = useState(null)
+  const [editable, setEditable] = useState(false)
+  const [editText, setEditText] = useState('')
 
   const handleNoteChange = (e) => {
     setNoteFormValue({ body: e.target.value })
@@ -30,10 +36,14 @@ const TreeView = ({ user }) => {
 
   const handleBranchSubmit = async (e) => {
     e.preventDefault()
-    const newBranch = await CreateBranch({
+    let newBranch = await CreateBranch({
       body: branchFormValue.body,
       user: user.id
     })
+    const topLevelBranches = branches.filter((branch) => {
+      return !branch.parentBranch
+    })
+    newBranch.data.number = topLevelBranches.length + 1
     setBranches([...branches, newBranch.data])
     setBranchFormValue({
       body: ''
@@ -61,13 +71,28 @@ const TreeView = ({ user }) => {
       let parentBranch = branches.find((branch) => {
         return branch._id === parentSearchId
       })
+      const parentBranchIdx = branches.findIndex((branch) => {
+        return branch === parentBranch
+      })
       if (active.id.startsWith('note-')) {
         const noteSearchId = active.id.replace('note-', '')
         let childNote = notes.find((note) => {
           return note._id === noteSearchId
         })
+        childNote.parentBranch = parentBranch._id
+        childNote.connected = true
         let newArr = branches
-        newArr[parentBranch.number - 1].notes.push(childNote)
+        newArr[parentBranchIdx].notes.push(childNote)
+        setBranches([...newArr])
+      } else if (active.id.startsWith('branch-')) {
+        const branchSearchId = active.id.replace('branch-', '')
+        let childBranch = branches.find((branch) => {
+          return branch._id === branchSearchId
+        })
+        childBranch.parentBranch = parentBranch._id
+        childBranch.connected = true
+        let newArr = branches
+        newArr[parentBranchIdx].childBranch.push(childBranch)
         setBranches([...newArr])
       }
     }
@@ -102,13 +127,42 @@ const TreeView = ({ user }) => {
     </div>
   )
 
+  const handleEditClick = () => {
+    setEditable(true)
+  }
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault()
+    UpdateProject(user, editText)
+    setEditable(false)
+  }
+
+  const handleEditInput = (e) => {
+    setEditText(e.target.value)
+    console.log(editText)
+  }
+
+  const normalBody = (
+    <div>
+      <p>{editText}</p>
+      <button onClick={handleEditClick}>EDIT</button>
+    </div>
+  )
+
+  const editForm = (
+    <form onSubmit={handleEditSubmit}>
+      <input type="text" value={editText} onChange={handleEditInput} />
+      <button type="submit">SUBMIT</button>
+    </form>
+  )
+
   useEffect(() => {
     const getNotes = async () => {
       const data = await GetNotes()
       setNotes(data)
     }
     const getBranches = async () => {
-      const data = await GetBranches()
+      let data = await GetBranches()
       let curNum = 1
       await data.forEach((datum) => {
         if (!datum.connected) {
@@ -118,20 +172,26 @@ const TreeView = ({ user }) => {
       })
       setBranches(data)
     }
+    const getProject = async () => {
+      const data = await GetProject()
+      setEditText(data.researchQuestion)
+      console.log(editText)
+    }
+    getProject()
     if (!notes.length) {
       getNotes()
     }
     if (!branches.length) {
       getBranches()
     }
-    console.log(branches)
-  }, [branches])
+  }, [])
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div id="tree-view">
-        {user && notes.length ? (
-          <Right size="300px" scrollable={true}>
+        <Top size={50}>{editable ? editForm : normalBody}</Top>
+        <Right size="300px" scrollable={true}>
+          {user && notes.length ? (
             <div>
               {addNoteForm}
               <div>
@@ -148,10 +208,10 @@ const TreeView = ({ user }) => {
                 )}
               </div>
             </div>
-          </Right>
-        ) : (
-          addNoteForm
-        )}
+          ) : (
+            addNoteForm
+          )}
+        </Right>
         <Fill scrollable={true}>
           {user && branches.length ? (
             <div>
@@ -172,6 +232,7 @@ const TreeView = ({ user }) => {
                       childBranches={branch.childBranch}
                       allNotes={notes}
                       parentLength={branches.length}
+                      allBranches={branches}
                     />
                   )
                 )}

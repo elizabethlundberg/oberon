@@ -18,6 +18,15 @@ export const GetBranches = async () => {
   }
 }
 
+export const GetProject = async () => {
+  try {
+    const res = await Client.get('/tree/project')
+    return res.data
+  } catch (err) {
+    throw err
+  }
+}
+
 export const CreateNote = async (data) => {
   try {
     const res = await Client.post('/tree/postnote', data)
@@ -48,7 +57,6 @@ export const CreateConnection = async (active, over) => {
       )
       return res
     } else if (active.id.startsWith('branch') && over.id.startsWith('branch')) {
-      console.log(over)
       const parentBranch = over.id.replace('branch-', '')
       const childBranch = active.id.replace('branch-', '')
       const res = await Client.post(
@@ -74,6 +82,16 @@ export const UpdateNote = async (note_id, data) => {
   try {
     const stripId = note_id.replace('note-', '')
     const res = await Client.put(`/tree/noteedit/${stripId}`, { body: data })
+  } catch (err) {
+    throw err
+  }
+}
+
+export const UpdateProject = async (user, editText) => {
+  try {
+    const res = await Client.put(`/tree/projectedit/${user.id}`, {
+      researchQuestion: editText
+    })
   } catch (err) {
     throw err
   }

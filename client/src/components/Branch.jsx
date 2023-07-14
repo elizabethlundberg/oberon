@@ -23,29 +23,50 @@ const BranchNote = (props) => {
     : undefined
 
   useEffect(() => {
-    if (props.childBranches.length) {
-      let numberedBranches = props.childBranches
-      let curNum = 1
-      numberedBranches.forEach((branch) => {
-        branch.number = curNum
-        curNum++
-      })
-      setChildBranches(numberedBranches)
-    }
+    const stripId = props.id.replace('branch-', '')
+    let numberedBranches = props.childBranches
+    props.allBranches.forEach((branch) => {
+      const includesBranch = (branchArrEl) => {
+        return branchArrEl._id === branch._id
+      }
+      if (
+        branch.parentBranch === stripId &&
+        !numberedBranches.some(includesBranch) &&
+        branch.connected
+      ) {
+        numberedBranches.push(branch)
+      }
+    })
+    let curNum = 1
+    numberedBranches.forEach((branch) => {
+      branch.number = curNum
+      curNum++
+    })
+    setChildBranches(numberedBranches)
     let noteArr = []
-    if (props.childNotes.length) {
-      props.childNotes.forEach((noteString) => {
-        if (typeof noteString === 'string') {
-          let noteToAdd = props.allNotes.find((allNote) => {
-            return allNote._id === noteString
-          })
-          noteArr.push(noteToAdd)
-        } else {
-          noteArr.push(noteString)
-        }
-      })
-      setChildNotes(noteArr)
-    }
+    props.childNotes.forEach((noteString) => {
+      if (typeof noteString === 'string') {
+        let noteToAdd = props.allNotes.find((allNote) => {
+          return allNote._id === noteString
+        })
+        noteArr.push(noteToAdd)
+      } else {
+        noteArr.push(noteString)
+      }
+    })
+    props.allNotes.forEach((note) => {
+      const includesNote = (noteArrEl) => {
+        return noteArrEl._id === note._id
+      }
+      if (
+        note.parentBranch === stripId &&
+        !noteArr.some(includesNote) &&
+        note.connected
+      ) {
+        noteArr.push(note)
+      }
+    })
+    setChildNotes(noteArr)
   }, [props])
 
   const nextLevel = parseInt(props.level) + 1
@@ -57,6 +78,7 @@ const BranchNote = (props) => {
   const handleEditSubmit = (e) => {
     e.preventDefault()
     UpdateBranch(props.id, editText)
+    setEditable(false)
   }
 
   const handleEditInput = (e) => {
@@ -64,7 +86,11 @@ const BranchNote = (props) => {
   }
 
   const handleDeleteClick = (e) => {
+    e.preventDefault()
     DeleteBranch(props.id)
+    setTimeout(() => {
+      location.reload()
+    }, 200)
   }
 
   const editForm = (
@@ -74,11 +100,27 @@ const BranchNote = (props) => {
     </form>
   )
 
+  const getLevelText = () => {
+    if (props.level === 2) {
+      return 'Sub-section'
+    } else if (props.level === 3) {
+      return 'Sub-sub-section'
+    } else if (props.level === 4) {
+      return 'Sub-sub-sub-section'
+    } else {
+      return 'Section'
+    }
+  }
+  const levelText = getLevelText()
+
   const normalBody = (
     <div>
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
         <p>
-          {props.number}. {props.body}
+          <b>
+            {levelText} {props.number}
+          </b>{' '}
+          {editText}
         </p>
       </div>
       <div>
@@ -90,10 +132,16 @@ const BranchNote = (props) => {
 
   const handleMoveUp = (e) => {
     MoveBranchUp(props.id, props.number)
+    setTimeout(() => {
+      location.reload()
+    }, 200)
   }
 
   const handleMoveDown = (e) => {
     MoveBranchDown(props.id, props.number)
+    setTimeout(() => {
+      location.reload()
+    }, 200)
   }
 
   const moveButtons = (
@@ -106,6 +154,7 @@ const BranchNote = (props) => {
       )}
     </div>
   )
+
   return (
     <div className={'border-4 border-black level-' + nextLevel}>
       {editable ? editForm : normalBody}

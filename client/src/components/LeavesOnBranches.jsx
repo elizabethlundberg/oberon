@@ -18,6 +18,7 @@ const LeavesOnBranches = (props) => {
   const handleEditSubmit = (e) => {
     e.preventDefault()
     UpdateNote(props.id, editText)
+    setEditable(false)
   }
 
   const handleEditInput = (e) => {
@@ -25,6 +26,9 @@ const LeavesOnBranches = (props) => {
   }
   const handleDeleteClick = (e) => {
     DeleteNote(props.id)
+    setTimeout(() => {
+      location.reload()
+    }, 300)
   }
 
   const editForm = (
@@ -38,7 +42,7 @@ const LeavesOnBranches = (props) => {
   const normalBody = (
     <div className="border-2 border-black">
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <p>{props.body}</p>
+        <p>{editText}</p>
       </div>
       <div>
         <button onClick={handleEditClick}>EDIT</button>

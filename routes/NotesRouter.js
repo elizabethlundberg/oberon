@@ -16,6 +16,13 @@ router.get(
   controller.GetNotes
 )
 
+router.get(
+  '/project',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.GetProject
+)
+
 router.post(
   '/postnote',
   middleware.stripToken,
@@ -56,6 +63,13 @@ router.put(
   middleware.stripToken,
   middleware.verifyToken,
   controller.UpdateNote
+)
+
+router.put(
+  '/projectedit/:user_id',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.UpdateProject
 )
 
 router.delete(

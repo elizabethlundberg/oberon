@@ -1,4 +1,4 @@
-const { Note, Branch } = require('../models')
+const { Note, Branch, Project } = require('../models')
 
 const GetNotes = async (req, res) => {
   try {
@@ -22,6 +22,23 @@ const GetBranches = async (req, res) => {
       })
       .populate('notes')
     res.send(branches)
+  } catch (err) {
+    throw err
+  }
+}
+
+const GetProject = async (req, res) => {
+  try {
+    let project = await Project.findOne({
+      user: res.locals.payload.id
+    })
+    if (project === null) {
+      project = await Project.create({
+        user: res.locals.payload.id,
+        researchQuestion: 'Add your research question here.'
+      })
+    }
+    res.send(project)
   } catch (err) {
     throw err
   }
@@ -122,6 +139,17 @@ const UpdateNote = async (req, res) => {
   }
 }
 
+const UpdateProject = async (req, res) => {
+  try {
+    const filter = { user: req.params.user_id }
+    const update = req.body
+    const result = await Project.findOneAndUpdate(filter, update)
+    res.send(result)
+  } catch (err) {
+    throw err
+  }
+}
+
 const DeleteNote = async (req, res) => {
   const note_id = req.params.note_id
   try {
@@ -147,6 +175,10 @@ const DeleteBranch = async (req, res) => {
       { parentBranch: branch_id },
       { $set: { connected: false } }
     )
+    await Branch.updateOne(
+      { childBranch: branch_id },
+      { $pull: { childBranch: branch_id } }
+    )
     const result = await Branch.findOneAndDelete({ _id: branch_id })
     res.send(result)
   } catch (err) {
@@ -164,6 +196,7 @@ const MoveBranchUp = async (req, res) => {
       parentBranch.childBranch[numToMove - 1]
     parentBranch.childBranch[numToMove - 1] = newPosition
     const response = await parentBranch.save()
+    console.log(response)
     res.send(response)
   } catch (err) {
     throw err
@@ -198,5 +231,7 @@ module.exports = {
   DeleteNote,
   DeleteBranch,
   MoveBranchUp,
-  MoveBranchDown
+  MoveBranchDown,
+  GetProject,
+  UpdateProject
 }
