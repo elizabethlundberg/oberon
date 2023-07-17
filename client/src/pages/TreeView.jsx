@@ -101,7 +101,7 @@ const TreeView = ({ user }) => {
 
   const addNoteForm = (
     <div>
-      <form onSubmit={handleNoteSubmit}>
+      <form onSubmit={handleNoteSubmit} className="mb-1.5">
         <label htmlFor="add-note">Add Note: </label>
         <input
           id="add-note"
