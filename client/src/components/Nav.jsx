@@ -5,24 +5,45 @@ const Nav = ({ user, handleLogOut }) => {
   if (user) {
     userOptions = (
       <nav>
-        <h3>Welcome {user.email}!</h3>
-        <Link to="/tree">Tree Mode</Link>
+        <h2 className="ml-2 text-xl font-semibold">Welcome {user.email}!</h2>
+        <Link to="/tree">
+          <button className="bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded m-2">
+            Note View
+          </button>
+        </Link>
         <Link onClick={handleLogOut} to="/">
-          Sign Out
+          <button className="bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded m-0.5">
+            Sign Out
+          </button>
         </Link>
       </nav>
     )
   }
   const loginOptions = (
     <nav>
-      <Link to="/">Home</Link>
-      <Link to="/register">Sign Up</Link>
-      <Link to="/signin">Log In</Link>
+      <Link
+        className="bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded m-2"
+        to="/"
+      >
+        Home
+      </Link>
+      <Link
+        className="bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded m-2"
+        to="/register"
+      >
+        Sign Up
+      </Link>
+      <Link
+        className="bg-amber-600 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded m-2"
+        to="/signin"
+      >
+        Log In
+      </Link>
     </nav>
   )
   return (
     <header>
-      <p>Puck</p>
+      <h1 className="ml-1.5 mb-0.5 text-5xl font-extrabold">Oberon</h1>
       {user ? userOptions : loginOptions}
     </header>
   )

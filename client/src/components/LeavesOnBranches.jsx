@@ -32,15 +32,20 @@ const LeavesOnBranches = (props) => {
   }
 
   const editForm = (
-    <div className="border-4 border-black">
+    <div className="border-4 border-black bg-emerald-300">
       <form onSubmit={handleEditSubmit}>
-        <input type="text" value={editText} onChange={handleEditInput} />
+        <input
+          className="border-2 border-black bg-emerald-200"
+          type="text"
+          value={editText}
+          onChange={handleEditInput}
+        />
         <button type="submit">SUBMIT</button>
       </form>
     </div>
   )
   const normalBody = (
-    <div className="border-2 border-black">
+    <div className="border-2 border-black bg-emerald-300">
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
         <p>{editText}</p>
       </div>

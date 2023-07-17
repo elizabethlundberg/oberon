@@ -95,7 +95,12 @@ const BranchNote = (props) => {
 
   const editForm = (
     <form onSubmit={handleEditSubmit}>
-      <input type="text" value={editText} onChange={handleEditInput} />
+      <input
+        type="text"
+        value={editText}
+        onChange={handleEditInput}
+        className="border-black border-2"
+      />
       <button type="submit">SUBMIT</button>
     </form>
   )
@@ -156,7 +161,7 @@ const BranchNote = (props) => {
   )
 
   return (
-    <div className={'border-4 border-black level-' + nextLevel}>
+    <div className={'bg-cyan-400 border-4 border-black level-' + nextLevel}>
       {editable ? editForm : normalBody}
       {props.level > 1 ? moveButtons : ''}
       {props.level > 3 ? '' : <DropBox id={props.id} />}

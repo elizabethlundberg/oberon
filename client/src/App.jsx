@@ -32,11 +32,15 @@ const App = () => {
   return (
     <ViewPort>
       <div className="App">
-        <Top size={100} centerContent={CenterType.Vertical}>
+        <Top
+          size={170}
+          centerContent={CenterType.Vertical}
+          className="bg-emerald-500"
+        >
           <Nav user={user} handleLogOut={handleLogOut} />
         </Top>
         <main>
-          <Fill>
+          <Fill className="bg-gradient-to-t from-emerald-700 to-emerald-500">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/register" element={<Register />} />

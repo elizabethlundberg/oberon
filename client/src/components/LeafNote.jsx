@@ -34,16 +34,22 @@ const LeafNote = (props) => {
   }
 
   const editForm = (
-    <div className="border-4 border-black">
+    <div className="border-4 border-black bg-white">
       <form onSubmit={handleEditSubmit}>
-        <input type="text" value={editText} onChange={handleEditInput} />
+        <input
+          type="text"
+          value={editText}
+          onChange={handleEditInput}
+          className="border-black border-2"
+        />
+        <br />
         <button type="submit">SUBMIT</button>
       </form>
     </div>
   )
 
   const normalBody = (
-    <div className="border-4 border-black">
+    <div className="border-4 border-black bg-white">
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
         <p>{editText}</p>
       </div>

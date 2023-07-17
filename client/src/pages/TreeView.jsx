@@ -12,7 +12,7 @@ import {
   CreateConnection
 } from '../services/NoteServices'
 import LeafNote from '../components/LeafNote'
-import { Right, Fill, Top } from 'react-spaces'
+import { RightResizable, Fill, Top } from 'react-spaces'
 import BranchNote from '../components/Branch'
 import { DndContext, DragOverlay } from '@dnd-kit/core'
 
@@ -102,11 +102,14 @@ const TreeView = ({ user }) => {
   const addNoteForm = (
     <div>
       <form onSubmit={handleNoteSubmit}>
+        <label htmlFor="add-note">Add Note: </label>
         <input
+          id="add-note"
           type="text"
           value={noteFormValue.body}
           onChange={handleNoteChange}
           required
+          className="border-black border-2"
         />
         <button type="submit">+</button>
       </form>
@@ -115,11 +118,14 @@ const TreeView = ({ user }) => {
 
   const addBranchForm = (
     <div>
-      <form onSubmit={handleBranchSubmit}>
+      <form onSubmit={handleBranchSubmit} className="mb-1.5">
+        <label htmlFor="add-branch">Add Section: </label>
         <input
           type="text"
+          id="add-branch"
           value={branchFormValue.body}
           onChange={handleBranchChange}
+          className="border-2 border-black"
           required
         />
         <button type="submit">+</button>
@@ -143,14 +149,19 @@ const TreeView = ({ user }) => {
   }
 
   const normalBody = (
-    <div>
-      <p>{editText}</p>
-      <button onClick={handleEditClick}>EDIT</button>
+    <div className=" border-black border-2 bg-white p-1">
+      <p className="inline m-2">Research Question: {editText}</p>
+      <button className="inline" onClick={handleEditClick}>
+        EDIT
+      </button>
     </div>
   )
 
   const editForm = (
     <form onSubmit={handleEditSubmit}>
+      <p className="inline m-2 border-black border-2 bg-white p-1.25">
+        Research Question:{' '}
+      </p>
       <input type="text" value={editText} onChange={handleEditInput} />
       <button type="submit">SUBMIT</button>
     </form>
@@ -175,7 +186,6 @@ const TreeView = ({ user }) => {
     const getProject = async () => {
       const data = await GetProject()
       setEditText(data.researchQuestion)
-      console.log(editText)
     }
     getProject()
     if (!notes.length) {
@@ -190,57 +200,67 @@ const TreeView = ({ user }) => {
     <DndContext onDragEnd={handleDragEnd}>
       <div id="tree-view">
         <Top size={50}>{editable ? editForm : normalBody}</Top>
-        <Right size="300px" scrollable={true}>
-          {user && notes.length ? (
-            <div>
-              {addNoteForm}
+        <Fill>
+          <RightResizable
+            className="border-black border-2 p-2"
+            touchHandleSize={20}
+            trackSize={true}
+            minimumSize={200}
+            maximumSize={800}
+            scrollable={true}
+            size={400}
+          >
+            {user && notes.length ? (
               <div>
-                {notes.map((note) =>
-                  note.connected ? (
-                    ''
-                  ) : (
-                    <LeafNote
-                      id={`note-${note._id}`}
-                      body={note.body}
-                      key={note._id}
-                    />
-                  )
-                )}
+                {addNoteForm}
+                <div>
+                  {notes.map((note) =>
+                    note.connected ? (
+                      ''
+                    ) : (
+                      <LeafNote
+                        id={`note-${note._id}`}
+                        body={note.body}
+                        key={note._id}
+                      />
+                    )
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            addNoteForm
-          )}
-        </Right>
-        <Fill scrollable={true}>
-          {user && branches.length ? (
-            <div>
-              {addBranchForm}
+            ) : (
+              addNoteForm
+            )}
+          </RightResizable>
+          <Fill scrollable={true} className="border-black border-2 p-2">
+            {user && branches.length ? (
               <div>
-                {branches.map((branch) =>
-                  branch.connected ? (
-                    ''
-                  ) : (
-                    <BranchNote
-                      number={branch.number}
-                      body={branch.body}
-                      childNotes={branch.notes}
-                      key={branch._id}
-                      id={`branch-${branch._id}`}
-                      notes={notes}
-                      level="1"
-                      childBranches={branch.childBranch}
-                      allNotes={notes}
-                      parentLength={branches.length}
-                      allBranches={branches}
-                    />
-                  )
-                )}
+                {addBranchForm}
+                <div>
+                  {branches.map((branch) =>
+                    branch.connected ? (
+                      ''
+                    ) : (
+                      <BranchNote
+                        number={branch.number}
+                        body={branch.body}
+                        childNotes={branch.notes}
+                        key={branch._id}
+                        id={`branch-${branch._id}`}
+                        notes={notes}
+                        level="1"
+                        childBranches={branch.childBranch}
+                        allNotes={notes}
+                        parentLength={branches.length}
+                        allBranches={branches}
+                      />
+                    )
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            addBranchForm
-          )}
+            ) : (
+              addBranchForm
+            )}
+          </Fill>
         </Fill>
       </div>
     </DndContext>

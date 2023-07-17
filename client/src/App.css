@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap');
+
 body {
-  margin: 0
+  margin: 0;
+  font-family: 'Libre Baskerville', serif;
 }
 
 
@@ -9,15 +12,12 @@ body {
 
 .level-3 {
   width: 95%;
-  margin: 5px 0 0 10px;
 }
 
 .level-4 {
   width: 90%;
-  margin: 5px 0 0 10px;
 }
 
 .level-5 {
   width: 85%;
-  margin: 5px 0 0 10px;
 }
