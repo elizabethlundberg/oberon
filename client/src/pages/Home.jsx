@@ -1,8 +1,11 @@
 const Home = () => {
   return (
-    <div className="text-3xl">
-      Welcome to Puck, an advanced PDF annotation and academic writing
-      structuring app that uses an arborial model.
+    <div className="flex justify-center">
+      <div className="text-2xl w-10/12 bg-white border-black border-4 p-3">
+        Welcome to Oberon! Oberon is an alternative to Zettelkasten systems
+        which uses a drag-and-drop interface to organize notes into a structured
+        outline for academic writing.
+      </div>
     </div>
   )
 }

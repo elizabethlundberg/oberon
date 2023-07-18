@@ -35,23 +35,45 @@ const LeavesOnBranches = (props) => {
     <div className="border-4 border-black bg-emerald-300">
       <form onSubmit={handleEditSubmit}>
         <input
-          className="border-2 border-black bg-emerald-200"
+          className="border-2 border-black bg-emerald-200 ml-2 mt-2"
           type="text"
           value={editText}
           onChange={handleEditInput}
         />
-        <button type="submit">SUBMIT</button>
+        <br />
+        <button
+          className="bg-emerald-500 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded m-2"
+          type="submit"
+        >
+          SUBMIT
+        </button>
       </form>
     </div>
   )
   const normalBody = (
     <div className="border-2 border-black bg-emerald-300">
-      <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        className="pl-2 pt-2"
+      >
         <p>{editText}</p>
       </div>
       <div>
-        <button onClick={handleEditClick}>EDIT</button>
-        <button onClick={handleDeleteClick}>DELETE</button>
+        <button
+          className="bg-emerald-500 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded m-2"
+          onClick={handleEditClick}
+        >
+          EDIT
+        </button>
+        <button
+          className="bg-emerald-500 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded m-2"
+          onClick={handleDeleteClick}
+        >
+          DELETE
+        </button>
       </div>
     </div>
   )

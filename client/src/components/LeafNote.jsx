@@ -40,10 +40,15 @@ const LeafNote = (props) => {
           type="text"
           value={editText}
           onChange={handleEditInput}
-          className="border-black border-2"
+          className="border-black border-2 ml-2 mt-2"
         />
         <br />
-        <button type="submit">SUBMIT</button>
+        <button
+          className="bg-emerald-500 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded m-2"
+          type="submit"
+        >
+          SUBMIT
+        </button>
       </form>
     </div>
   )
@@ -51,11 +56,21 @@ const LeafNote = (props) => {
   const normalBody = (
     <div className="border-4 border-black bg-emerald-200 m-1">
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <p>{editText}</p>
+        <p className="ml-2 mt-2">{editText}</p>
       </div>
       <div>
-        <button onClick={handleEditClick}>EDIT</button>
-        <button onClick={handleDeleteClick}>DELETE</button>
+        <button
+          className="bg-emerald-500 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded m-2"
+          onClick={handleEditClick}
+        >
+          EDIT
+        </button>
+        <button
+          className="bg-emerald-500 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded m-2"
+          onClick={handleDeleteClick}
+        >
+          DELETE
+        </button>
       </div>
     </div>
   )

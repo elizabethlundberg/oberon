@@ -99,9 +99,15 @@ const BranchNote = (props) => {
         type="text"
         value={editText}
         onChange={handleEditInput}
-        className="border-black border-2"
+        className="border-black border-2 ml-2 mt-2"
       />
-      <button type="submit">SUBMIT</button>
+      <br />
+      <button
+        className="bg-cyan-500 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded m-2"
+        type="submit"
+      >
+        SUBMIT
+      </button>
     </form>
   )
 
@@ -120,7 +126,13 @@ const BranchNote = (props) => {
 
   const normalBody = (
     <div>
-      <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        className="pl-2 pt-2"
+      >
         <p>
           <b>
             {levelText} {props.number}
@@ -129,8 +141,18 @@ const BranchNote = (props) => {
         </p>
       </div>
       <div>
-        <button onClick={handleEditClick}>EDIT</button>
-        <button onClick={handleDeleteClick}>DELETE</button>
+        <button
+          className="bg-cyan-500 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded m-2"
+          onClick={handleEditClick}
+        >
+          EDIT
+        </button>
+        <button
+          className="bg-cyan-500 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded m-2"
+          onClick={handleDeleteClick}
+        >
+          DELETE
+        </button>
       </div>
     </div>
   )
@@ -151,9 +173,17 @@ const BranchNote = (props) => {
 
   const moveButtons = (
     <div>
-      {props.number > 1 ? <button onClick={handleMoveUp}>▲</button> : ''}
+      {props.number > 1 ? (
+        <button className="ml-2" onClick={handleMoveUp}>
+          ▲
+        </button>
+      ) : (
+        ''
+      )}
       {props.number < props.parentLength ? (
-        <button onClick={handleMoveDown}>▼</button>
+        <button className="ml-2" onClick={handleMoveDown}>
+          ▼
+        </button>
       ) : (
         ''
       )}

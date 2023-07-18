@@ -5,7 +5,7 @@ const DropBox = (props) => {
   const style = { color: isOver ? 'green' : undefined }
   return (
     <div
-      className="bg-cyan-200 border-2 border-slate-400 z-0"
+      className="bg-cyan-200 border-2 border-slate-400 z-0 p-3"
       ref={setNodeRef}
       style={style}
     >

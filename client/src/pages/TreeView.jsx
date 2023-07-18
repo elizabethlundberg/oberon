@@ -111,7 +111,9 @@ const TreeView = ({ user }) => {
           required
           className="border-black border-2"
         />
-        <button type="submit">+</button>
+        <button type="submit" className="pl-2 text-2xl">
+          +
+        </button>
       </form>
     </div>
   )
@@ -128,7 +130,9 @@ const TreeView = ({ user }) => {
           className="border-2 border-black"
           required
         />
-        <button type="submit">+</button>
+        <button type="submit" className="pl-2 text-2xl">
+          +
+        </button>
       </form>
     </div>
   )
