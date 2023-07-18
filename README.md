@@ -1,6 +1,6 @@
-# Puck
+# Oberon
 
-Note-taking app that uses an arborial model.
+Note app for organizing notes into sections.
 
 ## By Lark Lundberg
 
@@ -14,22 +14,21 @@ Puck uses a tree as a model for orgnaizing notes and designing a text. You can i
 
 ## To-Do
 
-- [ ] Deploy MVP
-  - [ ] Create Express server
-    - [ ] Create data models
-    - [ ] Enable User authentication and authorization with JWT
-    - [ ] Establish routes/controllers
-      - [ ] Auth
-      - [ ] Sources
-      - [ ] Branches
-      - [ ] Trunk/Project
-      - [ ] Notes
-  - [ ] Create React application
-    - [ ] Set up BrowserRouter and Routes
-    - [ ] Create pages
-      - [ ] Home
-      - [ ] PDF Browser
-      - [ ] Note Organizing
+- [x] Deploy MVP
+  - [x] Create Express server
+    - [x] Create data models
+    - [x] Enable User authentication and authorization with JWT
+    - [x] Establish routes/controllers
+      - [x] Auth
+      - [x] Sources
+      - [x] Branches
+      - [x] Trunk/Project
+      - [x] Notes
+  - [x] Create React application
+    - [x] Set up BrowserRouter and Routes
+    - [x] Create pages
+      - [x] Home
+      - [x] Note Organizing
 
 ## Technology
 
@@ -37,5 +36,6 @@ Puck uses a tree as a model for orgnaizing notes and designing a text. You can i
 - Express
 - MongoDB
 - React
-- react-pdf
+- react-spaces
+- DND-Kit
 - Tailwind
