@@ -155,19 +155,33 @@ const TreeView = ({ user }) => {
   const normalBody = (
     <div className=" border-black border-2 bg-white p-1">
       <p className="inline m-2">Research Question: {editText}</p>
-      <button className="inline" onClick={handleEditClick}>
+      <button
+        className="inline bg-cyan-500 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded"
+        onClick={handleEditClick}
+      >
         EDIT
       </button>
     </div>
   )
 
   const editForm = (
-    <form onSubmit={handleEditSubmit}>
-      <p className="inline m-2 border-black border-2 bg-white p-1.25">
-        Research Question:{' '}
-      </p>
-      <input type="text" value={editText} onChange={handleEditInput} />
-      <button type="submit">SUBMIT</button>
+    <form
+      onSubmit={handleEditSubmit}
+      className="bg-white border-black border-2 p-1"
+    >
+      <p className="inline m-2 p-1.25">Research Question: </p>
+      <input
+        type="text"
+        value={editText}
+        onChange={handleEditInput}
+        className="border-2 border-black w-auto"
+      />
+      <button
+        type="submit"
+        className="inline bg-cyan-500 hover:bg-cyan-800 text-white font-bold py-2 px-4 ml-2 rounded"
+      >
+        SUBMIT
+      </button>
     </form>
   )
 
